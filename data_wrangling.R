@@ -76,6 +76,16 @@ us_cate_file <- 'US_category_id.json'
 us_video <- open_file(us_file, us_cate_file)
 us_video <- us_video[us_video$views >= 5e5, ]
 
+in_file <- 'INvideos.csv'
+in_cate_file <- 'IN_category_id.json'
+in_video <- open_file(in_file, in_cate_file)
+in_video <- in_video[in_video$views >= 5e5, ]
+
+ca_file <- 'CAvideos.csv'
+ca_cate_file <- 'CA_category_id.json'
+ca_video <- open_file(ca_file, ca_cate_file)
+ca_video <- ca_video[ca_video$views >= 5e5, ]
+
 top_1000 <- top1000('topSubscribed.csv')
 
 
