@@ -1,7 +1,15 @@
 library(jsonlite)
 library(dplyr)
+# Numerical variable: 
+#   Like_View_Ratio in xx_video dataframes
+# Categorical variable:
+#   higher_than_mean in top_1000 dataframe
+# Summarization:
+#   mean_ratio_and_view dataframe
+
 
 # For xx_videos csv & json files.
+### NUMERICAL: Like_View_Ratio
 change_date_format <- function(xx_video) {
   pub_year <- substr(xx_video$publish_time, 1, 4)
   pub_month <- substr(xx_video$publish_time, 6, 7)
@@ -22,7 +30,6 @@ change_date_format <- function(xx_video) {
   return(xx_video)
 }
 
-#categorical variable and numerical variable
 convert_category <- function(file_name, xx_video) {
   xx_json <- jsonlite::fromJSON(file_name)
   xx_json <- data.frame(xx_json$items)
@@ -32,7 +39,7 @@ convert_category <- function(file_name, xx_video) {
   xx_video <- xx_video[, !(names(xx_video) %in% c('category_id', 'id'))]
   names(xx_video)[which(names(xx_video) == 'snippet.title')] <- 'title'
   
-  xx_video$`Like View Ratio` <- xx_video$likes / xx_video$views
+  xx_video$Like_View_Ratio <- xx_video$likes / xx_video$views
   
   return(xx_video)
 }
@@ -49,7 +56,30 @@ open_file <- function(file_name, cate_file) {
   return(xx_video)
 }
 
+
+### SUMMARIZATION of MEAN Like-View Ratio and MEAN Views for each category each country.
+merge_data <- function(us_video, ca_video, in_video) {
+  # Merge data for the USA
+  us_l_v_rate <- aggregate(cbind(Like_View_Ratio, views) ~ title, data = us_video, FUN = mean)
+  
+  # Merge data for Canada
+  ca_l_v_rate <- aggregate(cbind(Like_View_Ratio, views) ~ title, data = ca_video, FUN = mean)
+  
+  # Merge data for India
+  in_l_v_rate <- aggregate(cbind(Like_View_Ratio, views) ~ title, data = in_video, FUN = mean)
+  
+  # Merge USA and Canada data
+  us_ca <- merge(us_l_v_rate, ca_l_v_rate, by = "title", all = TRUE)
+  
+  # Merge all countries' data
+  mean_ratio_and_view <- merge(us_ca, in_l_v_rate, by = "title", all = TRUE)
+  names(mean_ratio_and_view) <- c("title", "USA_ratio", "USA_view", "Canada_ratio", "Canada_view", "India_ratio", "India_view")
+  
+  return(mean_ratio_and_view)
+}
+
 # For top 1000 subscribed file.
+### CATEGORICAL: higher_than_mean in subscribers
 top1000 <- function(csv_file) {
   top_1000 <- read.csv(csv_file)
   
@@ -64,6 +94,7 @@ top1000 <- function(csv_file) {
   top_1000$Video.Views <- as.numeric(gsub(',', '', top_1000$Video.Views))
   top_1000$Video.Count <- as.integer(gsub(',', '', top_1000$Video.Count))
   top_1000$Subscribers <- as.integer(gsub(',', '', top_1000$Subscribers))
+  top_1000$higher_than_mean <- top_1000$Subscribers >= mean(top_1000$Subscribers)
   
   return(top_1000)
 }
@@ -85,6 +116,7 @@ ca_cate_file <- 'CA_category_id.json'
 ca_video <- open_file(ca_file, ca_cate_file)
 ca_video <- ca_video[ca_video$views >= 5e5, ]
 
+
+mean_ratio_and_view <- merge_data(us_video, ca_video, in_video)
+
 top_1000 <- top1000('topSubscribed.csv')
-
-
