@@ -24,8 +24,6 @@ change_date_format <- function(xx_video) {
 
 #categorical variable and numerical variable
 convert_category <- function(file_name, xx_video) {
-  library(dplyr)
-  
   xx_json <- jsonlite::fromJSON(file_name)
   xx_json <- data.frame(xx_json$items)
   xx_json <- data.frame(id = as.integer(xx_json$id), title = xx_json$snippet$title)
