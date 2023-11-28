@@ -22,6 +22,7 @@ change_date_format <- function(xx_video) {
   return(xx_video)
 }
 
+#categorical variable and numerical variable
 convert_category <- function(file_name, xx_video) {
   library(dplyr)
   
