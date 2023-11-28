@@ -1,5 +1,9 @@
 library(jsonlite)
 library(dplyr)
+
+### All codes of data cleaning in this file and creation of
+### cleaned csv files are done INDIVIDUALLY by Yukang Zhao.
+
 # Numerical variable: 
 #   Like_View_Ratio in xx_video dataframes
 # Categorical variable:
