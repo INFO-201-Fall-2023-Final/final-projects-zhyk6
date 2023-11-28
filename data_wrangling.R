@@ -4,6 +4,12 @@ library(dplyr)
 ### All codes of data cleaning in this file and creation of
 ### cleaned csv files are done INDIVIDUALLY by Yukang Zhao.
 
+# Download the datasets at:
+# Top 1000 Subscribes: 
+#    https://www.kaggle.com/datasets/themrityunjaypathak/most-subscribed-1000-youtube-channels
+# USvideos: 
+#    https://www.kaggle.com/datasets/datasnaek/youtube-new
+
 # Numerical variable: 
 #   Like_View_Ratio in xx_video dataframes
 # Categorical variable:
