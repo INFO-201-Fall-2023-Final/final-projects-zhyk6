@@ -69,7 +69,7 @@ top1000 <- function(csv_file) {
 }
 
 
-# e.g. For us videos(summarization)
+# e.g. For us videos
 us_file <- 'USvideos.csv'
 us_cate_file <- 'US_category_id.json'
 us_video <- open_file(us_file, us_cate_file)
