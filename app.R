@@ -3,6 +3,7 @@ library(ggplot2)
 library(dplyr)
 
 # RUN THE data_wrangling.R FILE TO GET THE CLEANED DATAFRAMES FIRST
+source("data_wrangling.R")
 
 ui <- fluidPage(
   titlePanel("YouTube Videos Analysis"),
