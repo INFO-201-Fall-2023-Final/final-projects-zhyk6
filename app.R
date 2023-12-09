@@ -38,6 +38,12 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                    verbatimTextOutput("category_views_description")
                  ),
                  tags$div(
+                   id = "section3",
+                   h2("Section 3: Box Plot by Category"),
+                   plotOutput("box_plot"),
+                   verbatimTextOutput("box_plot_description")  # Description for box plot
+                 ),
+                 tags$div(
                    id = "conclusion",
                    h2("Conclusion"),
                    p("These were some key insights from our analysis."),
@@ -136,6 +142,31 @@ the more popular a category should be."
       labs(title = "Average Views by Category",
            x = "Category", y = "Average Views") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+
+  # box plot
+  output$box_plot <- renderPlot({
+    ggplot(us_video[us_video$days_from_pub_to_trend <= 20, ], aes(x = title, y = days_from_pub_to_trend)) +
+      geom_boxplot(fill = "skyblue") +
+      labs(x = "Category", y = "Days from Publish to Trending", 
+           title = "Box Plot of Days from Publish to Trending by Category") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+  
+  # Description for the box plot
+  output$box_plot_description <- renderText({
+    "This box plot displays the distribution of days from publish to trending for each video category.
+
+From the box chart we can see that the average days from publish to trending is around 5 days, except for Shows,
+which can be interpret by its special feature of different update frequency than the others. In general, we find
+it is more likely for a video to get trending after a short period of time after its publish, and the probability
+of getting trending is decreasing throughout time. This fact tells us that a YouTuber should probably try to make
+their cover and title of the videos as eye-catching as possible, in order to increase the chance for the videos to
+be clicked on and getting trending quicker.
+    
+Notice we ignored videos that got trending more than 20 days after its publish, which contains less than 3% of our data,
+those videos can be seen as outliers and also support our claim, but to make the box chart more readable, we choose to
+drop those videos from our data."
   })
   
   # Summary table for Summary Takeaways & About Page
