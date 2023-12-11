@@ -3,6 +3,9 @@ library(ggplot2)
 library(dplyr)
 
 # RUN THE data_wrangling.R FILE TO GET THE CLEANED DATAFRAMES FIRST
+# Use the original datasets downloaded from the websites:
+#   https://www.kaggle.com/datasets/datasnaek/youtube-new?select=USvideos.csv
+#   https://www.kaggle.com/datasets/themrityunjaypathak/most-subscribed-1000-youtube-channels
 source("data_wrangling.R")
 
 
