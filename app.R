@@ -5,7 +5,6 @@ library(dplyr)
 # RUN THE data_wrangling.R FILE TO GET THE CLEANED DATAFRAMES FIRST
 source("data_wrangling.R")
 
-top1000 <- read.csv('top_1000_subscribed.csv')
 
 ui <- fluidPage(
   titlePanel("YouTube Videos Analysis"),
@@ -76,6 +75,7 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                  h2("About"),
                  p("This analysis was conducted using datasets obtained from:"),
                  p("https://www.kaggle.com/datasets/datasnaek/youtube-new?select=USvideos.csv"),
+                 p("https://www.kaggle.com/datasets/themrityunjaypathak/most-subscribed-1000-youtube-channels"),
                  p("Authors: Yukang Zhao")
                )
              )
@@ -113,14 +113,14 @@ server <- function(input, output) {
   
   # Bar chart 3: top 100 subscribed channel categories.
   output$channel_category <- renderPlot({
-    category_data <- top1000 %>%
+    category_data <- top_1000 %>%
       group_by(Category) %>%
       summarise(Subscribers = n())
     
     ggplot(category_data, aes(x = Category, y = Subscribers)) +
       geom_bar(stat = "identity", fill = "purple") +
       labs(title = "Categories of channel on top 1000 subscribe",
-           x = "Category", y = "Subscribe") +
+           x = "Category", y = "Number of Channels") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
   
