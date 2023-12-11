@@ -5,6 +5,8 @@ library(dplyr)
 # RUN THE data_wrangling.R FILE TO GET THE CLEANED DATAFRAMES FIRST
 source("data_wrangling.R")
 
+top1000 <- read.csv('top_1000_subscribed.csv')
+
 ui <- fluidPage(
   titlePanel("YouTube Videos Analysis"),
   tabsetPanel(
@@ -32,6 +34,8 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                    id = "section2",
                    h2("Section 2: Video Categories"),
                    # Include the bar charts
+                   plotOutput("channel_category"),
+                   verbatimTextOutput("channel_category_description"),
                    plotOutput("category_counts"),
                    verbatimTextOutput("category_counts_description"),
                    plotOutput("category_views"),
@@ -43,6 +47,7 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                    plotOutput("box_plot"),
                    verbatimTextOutput("box_plot_description")  # Description for box plot
                  ),
+                 
                  tags$div(
                    id = "conclusion",
                    h2("Conclusion"),
@@ -57,7 +62,12 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                column(
                  width = 12,
                  h2("Summary Takeaways"),
-                 p("Here are the key findings from our analysis:"),
+                 p("Here are the key findings and summarise table from our analysis: Some most popular categories on YouTube
+                   are Gaming, Music Videos, Vlogs and Lifestyle, Educational Content, Comedy and Sketches,
+                   Tech Reviews, Animation, Beauty and Fashion and DIY and How-To etc. The popularity of 
+                   YouTube channels can vary by region, age group, and personal preferences. For the latest
+                   trends and popular channels, you may want to check recent sources and platforms that specialize
+                   in tracking YouTube analytics and trends."),
                  # Include summary tables, key insights, etc.
                  dataTableOutput("summary_table")
                ),
@@ -65,7 +75,7 @@ preferences and the YouTubers, we could give suggestions like what steps you sho
                  width = 12,
                  h2("About"),
                  p("This analysis was conducted using datasets obtained from:"),
-                 p("  https://www.kaggle.com/datasets/datasnaek/youtube-new?select=USvideos.csv"),
+                 p("https://www.kaggle.com/datasets/datasnaek/youtube-new?select=USvideos.csv"),
                  p("Authors: Yukang Zhao")
                )
              )
@@ -101,6 +111,19 @@ server <- function(input, output) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
   
+  # Bar chart 3: top 100 subscribed channel categories.
+  output$channel_category <- renderPlot({
+    category_data <- top1000 %>%
+      group_by(Category) %>%
+      summarise(Subscribers = n())
+    
+    ggplot(category_data, aes(x = Category, y = Subscribers)) +
+      geom_bar(stat = "identity", fill = "purple") +
+      labs(title = "Categories of channel on top 1000 subscribe",
+           x = "Category", y = "Subscribe") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  })
+  
   output$bubble_description <- renderText({
     "This bubble chart displays the relationship between total views, Like View Ratio, and categories of videos in the US.
 
@@ -124,6 +147,14 @@ On the contrary, if there are fewer videos in a category, the competition in thi
 which will be more friendly to novices."
   })
   
+  output$channel_category_description <- renderText({
+    "This bar chart represents the channel of videos on top 1000 in YOUTUBE.
+
+With this bar people can realize what categories of channel are more popular intuitively. People can
+compare the number of subscribers between channels with different tags at the same time."
+    
+  })
+  
   output$category_views_description <- renderText({
     "This bar chart shows the average views for each category.
     
@@ -143,7 +174,7 @@ the more popular a category should be."
            x = "Category", y = "Average Views") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   })
-
+  
   # box plot
   output$box_plot <- renderPlot({
     ggplot(us_video[us_video$days_from_pub_to_trend <= 20, ], aes(x = title, y = days_from_pub_to_trend)) +
